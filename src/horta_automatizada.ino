@@ -1,16 +1,16 @@
-#define motor 8 //pino do motor
-#define led 9 //pino do led
-#define SH 5 //pino do sensor de umidade
-unsigned long hr12 = 43200000; //tempo de 12horas 
-unsigned long hr3 = 10800000; //3 horas
-unsigned long antes=0; //grava o tempo anterior
-unsigned long agora; //grava o tempo atual
-unsigned long Y; //variavel auxiliar
-unsigned long regou=0; //grava ultima regada
-bool seco(); //função pra medir a umidade
-int nivel();
+#define motor 8 //motor pin
+#define led 9 //LED pin
+#define SH 5 //humidity sensor pin
+unsigned long hr12 = 43200000; //12 hours in ms
+unsigned long hr3 = 10800000; //3 hours in ms
+unsigned long lastCheck = 0; //stores previous check time
+unsigned long now; //stores current time
+unsigned long elapsed; //auxiliary variable
+unsigned long lastWatered = 0; //stores last watering time
+bool isDry(); //function to check if soil is dry
+int moistureLevel();
 int N;
-bool x;
+bool timerReset;
 
 void setup() 
 {
@@ -19,81 +19,81 @@ void setup()
   pinMode(led, OUTPUT);
   pinMode(SH, INPUT);
   //Serial.begin(9600);
-  //Serial.println("Inicio");
+  //Serial.println("Start");
   for(int i=0; i<3; i++){digitalWrite(led, HIGH);delay(300);digitalWrite(led, LOW);delay(100);}  
-  //if(nivel()<80)
+  //if(moistureLevel()<80)
    // { 
       //do
       //{
-        //Serial.println("Seco?");
-        digitalWrite(motor, HIGH); //mantém ligado até o solo ficar umido
-        digitalWrite(led, HIGH); //aqui também
-        regou = millis(); 
+        //Serial.println("Dry?");
+        digitalWrite(motor, HIGH); //keeps motor on until soil is moist
+        digitalWrite(led, HIGH); //same here
+        lastWatered = millis(); 
         delay(10000);
-    //  }while(seco());
+    //  }while(isDry());
    // }         
-  digitalWrite(motor, LOW); //desliga motor
-  digitalWrite(led, LOW); //desliga led
-    x=true;
+  digitalWrite(motor, LOW); //turns off motor
+  digitalWrite(led, LOW); //turns off LED
+    timerReset=true;
 } 
 
 void loop() 
 {
-  agora = millis();
-  /*Serial.print("Tempo desde a ultima regada: ");
-  Serial.println(agora-regou);
-  Serial.print("agora - antes = ");
-  Serial.println(agora-antes);*/
-  if(agora - antes >= hr12) 
+  now = millis();
+  /*Serial.print("Time since last watering: ");
+  Serial.println(now-lastWatered);
+  Serial.print("now - lastCheck = ");
+  Serial.println(now-lastCheck);*/
+  if(now - lastCheck >= hr12) 
   {
     /*do
     {
       //Serial.println("StandBy");
-      Y = millis();
+      elapsed = millis();
       digitalWrite(led, HIGH);delay(100);digitalWrite(led, LOW);delay(100);
-    }while(nivel() >= 80 && Y - agora <= hr3);*/
-   // if(nivel()<80)
+    }while(moistureLevel() >= 80 && elapsed - now <= hr3);*/
+   // if(moistureLevel()<80)
    // { 
     //  do
     //  {
-        //Serial.println("Seco?");
-        digitalWrite(motor, HIGH); //mantém ligado até o solo ficar umido
-        digitalWrite(led, HIGH); //aqui também
-        regou = millis(); 
+        //Serial.println("Dry?");
+        digitalWrite(motor, HIGH); //keeps motor on until soil is moist
+        digitalWrite(led, HIGH); //same here
+        lastWatered = millis(); 
         delay(10000);
-   //   }while(seco());
-  //  }    
-    x=true;
+   //   }while(isDry());
+   //  }    
+    timerReset=true;
   }  
-  digitalWrite(motor, LOW); //desliga motor
-  digitalWrite(led, LOW); //desliga led
-  /*int aux=nivel();
+  digitalWrite(motor, LOW); //turns off motor
+  digitalWrite(led, LOW); //turns off LED
+  /*int aux=moistureLevel();
   if(aux>90){digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(10000);}
   else if(aux>80){digitalWrite(led, HIGH); delay(100); digitalWrite(led, LOW); delay(7000);}
   else if(aux>70){digitalWrite(led, HIGH); delay(200); digitalWrite(led, LOW); delay(4000);}
   else if(aux>50){digitalWrite(led, HIGH); delay(200); digitalWrite(led, LOW); delay(1000);}
   else {digitalWrite(led, HIGH); delay(1500); digitalWrite(led, LOW); delay(1000);}*/
-  if(x){x=false; /*Serial.println("Zerou o relogio");*/ antes=agora; /*Serial.println(agora-antes);*/}
-  /*/Serial.println("Fim do loop");
-  //Serial.print("Tempo total: ");
+  if(timerReset){timerReset=false; /*Serial.println("Clock reset");*/ lastCheck=now; /*Serial.println(now-lastCheck);*/}
+  /*/Serial.println("End of loop");
+  //Serial.print("Total time: ");
   //Serial.println(millis());
   */
   digitalWrite(led, HIGH); delay(150); digitalWrite(led, LOW); delay(10000);
 }
 
-bool seco() //faz leitura da umidade
+bool isDry() //reads humidity level
 {
-  //if(nivel() > 90)return false; //se ja está umido, desligar
-  //else return true; //senão manter ligado
+  //if(moistureLevel() > 90)return false; //if already moist, turn off
+  //else return true; //otherwise keep on
   return false;
 }
 
-int nivel() //mede o nivel de umidade do solo
+int moistureLevel() //measures soil moisture level
 {
   //int X;
  // X = analogRead(SH);
 //  X = map(X, 1023, 0, 0, 200);
-  //Serial.print("Umidade atual = ");
+  //Serial.print("Current moisture = ");
   //Serial.println(X);
   return 0;
 }
