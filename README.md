@@ -10,15 +10,15 @@ This project automates the irrigation of a small garden/plant bed. The system pe
 
 ```
 ├── src/
-│   └── horta_automatizada.ino    # Main Arduino source code
+│   └── automatized_garden.ino    # Main Arduino source code
 ├── layers/                        # PCB layout files (KiCad)
-│   ├── horta automatizada.pdsprj
-│   ├── horta automatizada esquemático.pdf
-│   ├── horta automatizada top silk.pdf
-│   ├── horta automatizada bottom copper.pdf
+│   ├── automatized_garden.pdsprj
+│   ├── automatized_garden schematics.pdf
+│   ├── automatized_garden top silk.pdf
+│   ├── automatized_garden bottom copper.pdf
 │   └── ...
 └── building materials/
-    └── materiais.docx             # Component list
+    └── materials.docx             # Component list
 ```
 
 ## Hardware
@@ -48,9 +48,9 @@ The humidity sensor was originally used for soil moisture feedback but is **not 
 
 2. **`loop()`** — Checks if 12 hours (`hr12 = 43200000 ms`) have passed since the last check. If so, triggers a 10-second watering pulse. The LED blinks every ~11.5 seconds as a status indicator.
 
-3. **`seco()`** — Reads the humidity sensor and returns whether the soil is dry. Currently disabled (always returns `false`).
+3. **`isDry()`** — Reads the humidity sensor and returns whether the soil is dry. Currently disabled (always returns `false`).
 
-4. **`nivel()`** — Reads the analog value from the humidity sensor and maps it to a 0–200 scale. Currently disabled (always returns `0`).
+4. **`moistureLevel()`** — Reads the analog value from the humidity sensor and maps it to a 0–200 scale. Currently disabled (always returns `0`).
 
 ### Key Timings
 
@@ -71,4 +71,4 @@ The PCB design files are in the `layers/` folder:
 
 ## Code Source Documentation
 
-See `src/horta_automatizada.ino` for the complete and documented source code. All comments in the code are in Portuguese.
+See `src/automatized_garden.ino` for the complete and documented source code. All comments in the code are in Portuguese.
